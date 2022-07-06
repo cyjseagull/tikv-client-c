@@ -250,18 +250,18 @@ private:
 
   template <Action action>
   void doActionOnBatches(Backoffer &bo, const std::vector<BatchKeys> &batches) {
-    if constexpr (action == ActionPrewrite) {
+    /*if constexpr (action == ActionPrewrite) {
       asyncPrewriteBatches(bo, batches);
-    }
+    }*/
     // #pragma omp parallel for
     for (const auto &batch : batches) {
       if constexpr (action == ActionRollback) {
         rollbackSingleBatch(bo, batch);
       }
-      // else if constexpr (action == ActionPrewrite)
-      // {
-      //   prewriteSingleBatch(bo, batch);
-      // }
+      else if constexpr (action == ActionPrewrite)
+      {
+         prewriteSingleBatch(bo, batch);
+      }
       else if constexpr (action == ActionCommit) {
         commitSingleBatch(bo, batch);
       }
