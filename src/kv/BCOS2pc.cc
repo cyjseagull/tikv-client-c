@@ -46,8 +46,6 @@ BCOSTwoPhaseCommitter::BCOSTwoPhaseCommitter(
 
 void BCOSTwoPhaseCommitter::prewriteSingleBatch(Backoffer &bo,
                                                 const BatchKeys &batch) {
-  uint64_t batch_txn_size = region_txn_size[batch.region.id];
-
   for (;;) {
     auto req = std::make_shared<kvrpcpb::PrewriteRequest>();
     for (const auto &key : batch.keys) {
@@ -64,7 +62,7 @@ void BCOSTwoPhaseCommitter::prewriteSingleBatch(Backoffer &bo,
     req->set_primary_lock(primary_lock);
     req->set_start_version(start_ts);
     req->set_lock_ttl(lock_ttl);
-    req->set_txn_size(batch_txn_size);
+    req->set_txn_size(std::numeric_limits<uint64_t>::max());
     req->set_max_commit_ts(max_commit_ts);
 
     // TODO: set right min_commit_ts for pessimistic lock

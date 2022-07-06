@@ -46,8 +46,6 @@ private:
   std::chrono::milliseconds start_time;
 
   Cluster *cluster;
-
-  std::unordered_map<uint64_t, int> region_txn_size;
   uint64_t txn_size = 0;
 
   int lock_ttl = 0;
